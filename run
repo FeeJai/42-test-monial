@@ -1,0 +1,7 @@
+DAYNUMBER=$1
+
+rm -rf tools work
+./spawn.pl ../d$DAYNUMBER config_d$DAYNUMBER.pl
+./tools/build.sh
+./tools/verify.sh
+./tools/check_all.sh
