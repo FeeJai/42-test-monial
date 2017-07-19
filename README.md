@@ -1,6 +1,6 @@
-## 42 Test Suite
+## 42 Test-monial
 
-A tool for quickly testing answers to the piscine questions
+An easy-to-use test suit for most of 42 Piscine C problems.
 
 ## Sample Usage
 
