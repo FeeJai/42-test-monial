@@ -158,10 +158,10 @@ $expected = 'asdf qwerty zxcv';
 ex10
 char* ft_strcapitalize(char* str)
 main -m ====
-char str[] = "asdf qWeRtY ZXCV 100TIS";
+char str[] = "salut, comment tu vas ? 42mots quarante-deux; cinquante+et+un";
 printf("%s", ft_strcapitalize(str));
 ==== check -e ====
-$expected = 'Asdf Qwerty Zxcv 100tis';
+$expected = 'Salut, Comment Tu Vas ? 42mots Quarante-Deux; Cinquante+Et+Un';
 ====
 
 ex11
