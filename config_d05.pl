@@ -47,7 +47,11 @@ foreach (@tests) {
 ==== main_junk -m ====
 TEST(ft_atoi("\t\n\v\f\r +256"), 256);
 TEST(ft_atoi("256a99999"), 256);
-==== check_jump -l=2 ====
+TEST(ft_atoi("0123abce1123"), 123);
+TEST(ft_atoi("abcd123"), 0);
+TEST(ft_atoi("      +0123abce1123"), 123);
+TEST(ft_atoi("  + 	0123abce1123"), 0);
+==== check_jump -l=6 ====
 ====
 
 
@@ -277,8 +281,17 @@ printf("%d-", ft_strlcat(test, "", 16));
 printf("%s\n", test);
 printf("%d-", ft_strlcat(test, "asdf", 0));
 printf("%s\n", test);
+char str1[100] = "1234567890";
+char str2[34] = "1ab";
+unsigned int i1 = 16;
+printf("%d-", ft_strlcat(str1, str2, i1));
+printf("%s\n", str1);
+printf("%d-", ft_strlcat(str1, str2, i1));
+printf("%s\n", str1);
+printf("%d-", ft_strlcat(str1, str2, i1));
+printf("%s\n", str1);
 ==== check -e ====
-$expected = "4-asdf\n8-asdfa\n8-asdfa\n5-asdfa\n4-asdfa\n";
+$expected = "4-asdf\n8-asdfa\n8-asdfa\n5-asdfa\n4-asdfa\n13-12345678901ab\n16-12345678901ab1a\n18-12345678901ab1a\n";
 ====
 
 
@@ -366,13 +379,8 @@ void* ft_print_memory(void* addr, unsigned int size)
 main -m ====
 ft_print_memory("asdfasdfqwertytyzxcvzxcv\0\0\xff\x7f\x01", 29);
 ==== check -e ====
-$expected = 
+$expected =
 '00000000: 6173 6466 6173 6466 7177 6572 7479 7479 asdfasdfqwertyty
 00000010: 7a78 6376 7a78 6376 0000 ff7f 01        zxcvzxcv.....
 ';
 ====
-
-
-
-
-
