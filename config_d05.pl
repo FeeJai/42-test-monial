@@ -356,7 +356,11 @@ my %tests = (
 	'_1_01234+' => 0,
 	_5_01234 => 0,
 	__01234 => 0,
+  '_      +0123abce1123_0123456789' => 123,
+  '_  +  0123abce1123_0123456789' => 0,
+  '_\t\n\v\f\r +256_0123456789' => 256,
 );
+
 foreach (sort keys %tests) {
 	my (undef, $str, $base) = split '_';
 	$code .= "TEST(ft_atoi_base(\"$str\", \"$base\"), $tests{$_});\n";
