@@ -13,13 +13,13 @@ sub slurp_file {
 	local $/;
 	my $contents = <$f>;
 	$f->close;
-	
+
 	return $contents
 }
 
 sub dump_file {
 	my ($file, $contents) = @_;
-	
+
 	# warn "creating file $file\n";
 
 	open my $f, '>', $file;
@@ -118,13 +118,13 @@ sub spawn_header_file {
 	my ($exercise, $exercise_flags, $name, $contents, $flags) = @_;
 
 	dump_file("work/$exercise/$name.h", $contents);
-	
+
 	return "work/$exercise/$name.h"
 }
 
 sub spawn_main_file {
 	my ($exercise, $exercise_flags, $name, $contents, $flags) = @_;
-	
+
 	my $prefix = "\n\n";
 	my $suffix = "\n\n";
 
@@ -154,7 +154,7 @@ sub spawn_main_file {
 
 	append_file('tools/build.sh', "
 		echo building work/$exercise/$name
-		gcc -Wall -Wextra -Werror stupidity.c $other_files work/$exercise/$name.c -o work/$exercise/$name
+		gcc -Wall -Wextra -Werror -fsanitize=address stupidity.c $other_files work/$exercise/$name.c -o work/$exercise/$name
 	");
 
 
@@ -226,12 +226,12 @@ sub spawn_check_file {
 			say \"!!!! EXPECTED: '\$expected'\" if defined \$expected;
 		}
 	" if $flags->{e};
-	
+
 	dump_file("work/$exercise/$name.pl", "#!/usr/bin/env perl
 		use strict;
 		use warnings;
 		use feature 'say';
-		
+
 		my \$program = './$main';
 
 		$prefix
@@ -285,7 +285,7 @@ sub main {
 		%exercise_flags = parse_flags($2) if defined $2;
 
 		if ($exercise_flags{N}) {
-			
+
 			warn "\npreparing $exercise\n";
 
 			my @exercise_files = map $exercise_flags{$_}, sort grep /\Af\d*\Z/, keys %exercise_flags;
@@ -300,9 +300,9 @@ sub main {
 					next EXERCISE;
 				}
 			}
-			
+
 			mkdir "work/$exercise";
-			
+
 			foreach my $glob (@exercise_globs) {
 				foreach my $file_path (<$project_directory/$exercise/$glob>) {
 					my $file = $file_path =~ s/\A.*\/([^\/]+)\Z/$1/r;
@@ -325,9 +325,9 @@ sub main {
 				my %spawn_flags;
 				my $break = $4;
 				%spawn_flags = parse_flags($3) if defined $3;
-				
+
 				my $spawn_contents = read_file_from_config(\@config, $break);
-				
+
 				my $file;
 				if ($spawn_type eq 'source') {
 					$file = spawn_source_file($exercise, \%exercise_flags, $spawn_name, $spawn_contents, \%spawn_flags);
@@ -344,7 +344,7 @@ sub main {
 
 		} elsif ($exercise_flags{p}) {
 			my $program_name = $function;
-			
+
 			warn "\npreparing $exercise/$program_name\n";
 
 			unless (-e -d "$project_directory/$exercise") {
@@ -355,17 +355,17 @@ sub main {
 				warn "missing project file $project_directory/$exercise/$program_name.c, skipping...";
 				next;
 			}
-			
+
 			mkdir "work/$exercise";
-			
+
 			mirror_file("$project_directory/$exercise/$program_name.c", "work/$exercise/$program_name.c");
-			
+
 			append_file('tools/verify.sh', " work/$exercise/$program_name.c");
 			append_file('tools/build.sh', "
 				echo building work/$exercise/$program_name
-				gcc -Wall -Wextra -Werror stupidity.c work/$exercise/$program_name.c -o work/$exercise/$program_name
+				gcc -Wall -Wextra -Werror -fsanitize=address stupidity.c work/$exercise/$program_name.c -o work/$exercise/$program_name
 			");
-			
+
 			while (@config and $config[0] =~ /\A(check\w*)(?: (-\w(?:=\S+)?(?: -\w(?:=\S+)?)*))? (=.*=)\Z/) {
 				shift @config;
 				my $check_file = "$1.pl";
@@ -373,11 +373,11 @@ sub main {
 				%check_flags = parse_flags($2) if defined $2;
 				my $break = $3;
 				warn "$check_file at work/$exercise/$check_file\n";
-				
+
 				my $prefix = "\n\n";
 				my $suffix = "\n\n";
 				my $contents = read_file_from_config(\@config, $break);
-				
+
 				$prefix .= "my %tests;\n" if $check_flags{t};
 				$suffix .= "
 					my \$errors = 0;
@@ -404,7 +404,7 @@ sub main {
 						say \"!!!! EXPECTED: '\$expected'\" if defined \$expected;
 					}
 				" if $check_flags{e};
-				
+
 				dump_file("work/$exercise/$check_file", "#!/usr/bin/env perl
 					use strict;
 					use warnings;
@@ -426,7 +426,7 @@ sub main {
 		} else {
 
 			my ($function_name, $function_proto) = parse_function_ref($function);
-			
+
 			warn "\npreparing $exercise/$function_name\n";
 
 			unless (-e -d "$project_directory/$exercise") {
@@ -443,9 +443,9 @@ sub main {
 				warn "missing prototype $function_name, skipping...";
 				next;
 			}
-			
+
 			mkdir "work/$exercise";
-			
+
 			warn "mirroring into work/$exercise/$function_name.c\n";
 			mirror_file("$project_directory/$exercise/$function_name.c", "work/$exercise/$function_name.c");
 
@@ -484,7 +484,7 @@ sub main {
 				dump_file("work/$exercise/$main_file.c", "$prefix$contents$suffix");
 				append_file('tools/build.sh', "
 					echo building work/$exercise/$main_file
-					gcc -Wall -Wextra -Werror stupidity.c work/$exercise/$function_name.c work/$exercise/$main_file.c -o work/$exercise/$main_file
+					gcc -Wall -Wextra -Werror -fsanitize=address stupidity.c work/$exercise/$function_name.c work/$exercise/$main_file.c -o work/$exercise/$main_file
 				");
 				while (@config and $config[0] =~ /\A(check\w*)(?: (-\w(?:=\S+)?(?: -\w(?:=\S+)?)*))? (=.*=)\Z/)
 				{
@@ -494,7 +494,7 @@ sub main {
 					%check_flags = parse_flags($2) if defined $2;
 					my $break = $3;
 					warn "$check_file at work/$exercise/$check_file\n";
-					
+
 					my $prefix = "\n\n";
 					my $suffix = "\n\n";
 					my $contents = read_file_from_config(\@config, $break);
@@ -546,12 +546,12 @@ sub main {
 						say 'work/$exercise/$check_file good!';
 					}
 				" if $check_flags{t};
-					
+
 					dump_file("work/$exercise/$check_file", "#!/usr/bin/env perl
 						use strict;
 						use warnings;
 						use feature 'say';
-						
+
 						my \$program = './work/$exercise/$main_file';
 						my \$output;
 						my \$expected;
@@ -574,4 +574,3 @@ sub main {
 
 
 caller or main(@ARGV);
-
