@@ -154,7 +154,7 @@ sub spawn_main_file {
 
 	append_file('tools/build.sh', "
 		echo building work/$exercise/$name
-		gcc -Wall -Wextra -Werror -g -fsanitize=address stupidity.c $other_files work/$exercise/$name.c -o work/$exercise/$name
+		gcc -Wall -Wextra -Wunreachable-code-aggressive -g -fsanitize=address stupidity.c $other_files work/$exercise/$name.c -o work/$exercise/$name
 	");
 
 
@@ -363,7 +363,7 @@ sub main {
 			append_file('tools/verify.sh', " work/$exercise/$program_name.c");
 			append_file('tools/build.sh', "
 				echo building work/$exercise/$program_name
-				gcc -Wall -Wextra -Werror -g -fsanitize=address stupidity.c work/$exercise/$program_name.c -o work/$exercise/$program_name
+				gcc -Wall -Wextra -Wunreachable-code-aggressive -g -fsanitize=address stupidity.c work/$exercise/$program_name.c -o work/$exercise/$program_name
 			");
 
 			while (@config and $config[0] =~ /\A(check\w*)(?: (-\w(?:=\S+)?(?: -\w(?:=\S+)?)*))? (=.*=)\Z/) {
@@ -484,7 +484,7 @@ sub main {
 				dump_file("work/$exercise/$main_file.c", "$prefix$contents$suffix");
 				append_file('tools/build.sh', "
 					echo building work/$exercise/$main_file
-					gcc -Wall -Wextra -Werror -g -fsanitize=address stupidity.c work/$exercise/$function_name.c work/$exercise/$main_file.c -o work/$exercise/$main_file
+					gcc -Wall -Wextra -Wunreachable-code-aggressive -g -fsanitize=address stupidity.c work/$exercise/$function_name.c work/$exercise/$main_file.c -o work/$exercise/$main_file
 				");
 				while (@config and $config[0] =~ /\A(check\w*)(?: (-\w(?:=\S+)?(?: -\w(?:=\S+)?)*))? (=.*=)\Z/)
 				{
