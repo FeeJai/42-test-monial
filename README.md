@@ -1,4 +1,4 @@
-## 42 Test-monial
+## 42 Test-Monial
 
 An easy-to-use test suit for most of 42 Piscine C problems.
 
@@ -11,4 +11,3 @@ Suppose you're checking Day 06 answers:
 - Clone a student's work repo to a folder named d06
 - Enter this project's folder: `cd 42-testimonial`
 - Run `./run 06`
-

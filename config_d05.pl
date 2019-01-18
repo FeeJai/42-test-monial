@@ -160,6 +160,8 @@ char* ft_strcapitalize(char* str)
 main -m ====
 char str[] = "salut, comment tu vas ? 42mots quarante-deux; cinquante+et+un";
 printf("%s", ft_strcapitalize(str));
+char str2[] = "asdf-qWeRtY ZXCV 100TIS";
+printf("%s", ft_strcapitalize(str2));
 ==== check -e ====
 $expected = 'Salut, Comment Tu Vas ? 42mots Quarante-Deux; Cinquante+Et+Un';
 ====

@@ -229,13 +229,13 @@ int main(int argc, char** argv)
 }
 ==== check -t ====
 %tests = (
-	"$program" => "\n",
-	"$program asdf" => "asdf,\n",
-	"$program asdf qwer" => "qwer,asdf,\n",
-	"$program asdf qwer zxcv" => "zxcv,qwer,asdf,\n",
-	"$program ''" => ",\n",
-	"$program 15 '' 25" => "25,,15,\n",
-	"$program wat" => "wat,\n",
+	"$program" => "$program,\n",
+	"$program asdf" => "asdf,$program,\n",
+	"$program asdf qwer" => "qwer,asdf,$program,\n",
+	"$program asdf qwer zxcv" => "zxcv,qwer,asdf,$program,\n",
+	"$program ''" => ",$program,\n",
+	"$program 15 '' 25" => "25,,15,$program,\n",
+	"$program wat" => "wat,$program,\n",
 );
 ====
 
@@ -278,7 +278,7 @@ int main()
 	l->next->next = CE("zxcv");
 	t_list* addresses[] = {l, l->next, l->next->next};
 	qsort(addresses, 3, sizeof(t_list*), (int(*)(const void*, const void*))compare_ints);
-	
+
 	ft_list_clear(&l);
 	// verify that this is set to a null pointer now
 	printf("is null? %p\n", l);
@@ -948,23 +948,3 @@ int main(int argc, char** argv)
 	"$program zxcv doop qwer asdf uiop hjkl vbnm" => "vbnm,hjkl,uiop,asdf,qwer,doop,zxcv,\n",
 );
 ====
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
