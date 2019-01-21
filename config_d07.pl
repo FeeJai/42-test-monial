@@ -41,6 +41,9 @@ printf("\n");
 
 res = ft_range(10, 5);
 printf("%" PRIxPTR "\n", (uintptr_t) res);
+
+res = ft_range(2147483647, -1215);
+printf("%" PRIxPTR "\n", (uintptr_t) res);
 ==== check -e ====
 $expected = '5,6,7,8,9,
 -20,-19,-18,-17,-16,
@@ -208,10 +211,3 @@ printf("\n");
 ==== check_less -e ====
 $expected = "\n\n";
 ====
-
-
-
-
-
-
-
