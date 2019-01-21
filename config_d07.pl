@@ -40,7 +40,7 @@ for (i = 0; i < 1; i++)
 printf("\n");
 
 res = ft_range(10, 5);
-printf("%" PRIxPTR "\n", (uintptr_t) res);
+printf("%" PRIxPTR ",\n", (uintptr_t) res);
 
 res = ft_range(2147483647, -1215);
 printf("%" PRIxPTR "\n", (uintptr_t) res);
@@ -48,6 +48,7 @@ printf("%" PRIxPTR "\n", (uintptr_t) res);
 $expected = '5,6,7,8,9,
 -20,-19,-18,-17,-16,
 100,
+0,
 0
 ';
 ====
