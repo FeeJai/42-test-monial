@@ -123,7 +123,7 @@ sub spawn_header_file {
 }
 
 sub spawn_main_file {
-	my ($exercise, $exercise_flags, $name, $contents, $flags) = @_;
+	my ($exercise, $exercise_flags, $name, $contents, $flags, $comp_command) = @_;
 
 	my $prefix = "\n\n";
 	my $suffix = "\n\n";
@@ -154,7 +154,7 @@ sub spawn_main_file {
 
 	append_file('tools/build.sh', "
 		echo building work/$exercise/$name
-		gcc -Wall -Wextra -Wunreachable-code-aggressive -g -fsanitize=address stupidity.c $other_files work/$exercise/$name.c -o work/$exercise/$name
+		$comp_command stupidity.c $other_files work/$exercise/$name.c -o work/$exercise/$name
 	");
 
 
@@ -269,6 +269,8 @@ sub main {
 
 	chmod 0755, 'tools/build.sh', 'tools/verify.sh', 'tools/check_all.sh';
 
+	our $comp_command = 'gcc -g -O -Wall -Wextra -Wunreachable-code-aggressive -fsanitize=address,undefined -fno-omit-frame-pointer';
+
 	my @config = grep $_ ne '', split /\r?\n/, slurp_file($config_file);
 
 	EXERCISE: while (@config) {
@@ -363,7 +365,7 @@ sub main {
 			append_file('tools/verify.sh', " work/$exercise/$program_name.c");
 			append_file('tools/build.sh', "
 				echo building work/$exercise/$program_name
-				gcc -Wall -Wextra -Wunreachable-code-aggressive -g -fsanitize=address stupidity.c work/$exercise/$program_name.c -o work/$exercise/$program_name
+				$comp_command stupidity.c work/$exercise/$program_name.c -o work/$exercise/$program_name
 			");
 
 			while (@config and $config[0] =~ /\A(check\w*)(?: (-\w(?:=\S+)?(?: -\w(?:=\S+)?)*))? (=.*=)\Z/) {
@@ -484,7 +486,7 @@ sub main {
 				dump_file("work/$exercise/$main_file.c", "$prefix$contents$suffix");
 				append_file('tools/build.sh', "
 					echo building work/$exercise/$main_file
-					gcc -Wall -Wextra -Wunreachable-code-aggressive -g -fsanitize=address stupidity.c work/$exercise/$function_name.c work/$exercise/$main_file.c -o work/$exercise/$main_file
+					$comp_command stupidity.c work/$exercise/$function_name.c work/$exercise/$main_file.c -o work/$exercise/$main_file
 				");
 				while (@config and $config[0] =~ /\A(check\w*)(?: (-\w(?:=\S+)?(?: -\w(?:=\S+)?)*))? (=.*=)\Z/)
 				{
@@ -500,6 +502,8 @@ sub main {
 					my $contents = read_file_from_config(\@config, $break);
 
 					$prefix .= "
+					  local \$SIG{ALRM} = sub { say '!!!! TIMEOUT in work/ex01/main - Infinite loop?'; kill -9, getpgrp; };
+					  alarm 2;
 						\$output = `\$program`;
 					" unless $check_flags{t};
 
