@@ -336,7 +336,7 @@ sub main {
 				} elsif ($spawn_type eq 'header') {
 					$file = spawn_header_file($exercise, \%exercise_flags, $spawn_name, $spawn_contents, \%spawn_flags);
 				} elsif ($spawn_type eq 'main') {
-					$file = spawn_main_file($exercise, \%exercise_flags, $spawn_name, $spawn_contents, \%spawn_flags);
+					$file = spawn_main_file($exercise, \%exercise_flags, $spawn_name, $spawn_contents, \%spawn_flags, $comp_command);
 					$exercise_flags{__LAST_MAIN} = "work/$exercise/$spawn_name";
 				} else {
 					$file = spawn_check_file($exercise, \%exercise_flags, $spawn_name, $spawn_contents, \%spawn_flags);
