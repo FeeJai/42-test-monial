@@ -149,13 +149,16 @@ int cmpnbr(int a, int b)
 
 int main(int argc, char** argv)
 {
-	if (argc < 2)
-		return 0;
-	int test[argc - 1];
+	int *test;
+	if (argc > 1)
+		test = malloc((argc - 1) * sizeof(int));
+	else
+		test = (int *)0;
 	for (int i = 1; i < argc; i++)
 		test[i - 1] = atoi(argv[i]);
 	
 	printf("%d", ft_is_sort(test, argc - 1, cmpnbr));
+	free(test);
 }
 ==== check -t ====
 %tests = (
