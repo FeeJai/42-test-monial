@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use feature 'say';
+use Scalar::Util qw(looks_like_number);
 
 
 
@@ -255,7 +256,7 @@ sub spawn_check_file {
 
 
 sub main {
-	my ($project_directory, $config_file) = @_;
+	my ($project_directory, $config_file, $DAYNUMBER) = @_;
 
 	die "project_directory required" unless defined $project_directory;
 	die "config file required" unless defined $config_file;
@@ -264,7 +265,14 @@ sub main {
 	mkdir 'work';
 
 	dump_file('tools/build.sh', "#!/bin/sh\n\n");
-	dump_file('tools/verify.sh', "#!/bin/sh\n\n norminette -R CheckForbiddenSourceHeader");
+	if (looks_like_number($DAYNUMBER) && $DAYNUMBER <= 07)
+	{
+		dump_file('tools/verify.sh', "#!/bin/sh\n\n norminette -R CheckForbiddenSourceHeader");
+	}
+	else
+	{
+		dump_file('tools/verify.sh', "#!/bin/sh\n\n norminette");
+	}
 	dump_file('tools/check_all.sh', "#!/bin/sh\n\n");
 
 	chmod 0755, 'tools/build.sh', 'tools/verify.sh', 'tools/check_all.sh';
