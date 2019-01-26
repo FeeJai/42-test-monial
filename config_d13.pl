@@ -27,7 +27,7 @@ main -f=btree_apply_prefix.c ====
 
 void	btree_apply_prefix(t_btree *root, void (applyf)(void *));
 
-t_btree		*bcn(void *item)
+t_btree		*btree_create_node(void *item)
 {
 	t_btree *node;
 
@@ -51,11 +51,11 @@ void	b_in(t_btree **root, void *item, int (*cmpf)(void *, void *))
 			else
 				node_it = &((*node_it)->left);
 		}
-		*node_it = bcn(item);
+		*node_it = btree_create_node(item);
 	}
 	else
 	{
-		*root = bcn(item);
+		*root = btree_create_node(item);
 	}
 }
 
@@ -87,7 +87,7 @@ main -f=btree_apply_infix.c ====
 #
 void	btree_apply_infix(t_btree *root, void (applyf)(void *));
 
-t_btree		*bcn(void *item)
+t_btree		*btree_create_node(void *item)
 {
 	t_btree *node;
 
@@ -111,11 +111,11 @@ void	b_in(t_btree **root, void *item, int (*cmpf)(void *, void *))
 			else
 				node_it = &((*node_it)->left);
 		}
-		*node_it = bcn(item);
+		*node_it = btree_create_node(item);
 	}
 	else
 	{
-		*root = bcn(item);
+		*root = btree_create_node(item);
 	}
 }
 
@@ -147,7 +147,7 @@ main -f=btree_apply_suffix.c ====
 
 void	btree_apply_suffix(t_btree *root, void (*applyf)(void *));
 
-t_btree		*bcn(void *item)
+t_btree		*btree_create_node(void *item)
 {
 	t_btree *node;
 
@@ -171,11 +171,11 @@ void	b_in(t_btree **root, void *item, int (*cmpf)(void *, void *))
 			else
 				node_it = &((*node_it)->left);
 		}
-		*node_it = bcn(item);
+		*node_it = btree_create_node(item);
 	}
 	else
 	{
-		*root = bcn(item);
+		*root = btree_create_node(item);
 	}
 }
 
@@ -264,7 +264,7 @@ void	bai(t_btree *root, void (*applyf)(void *))
 	}
 }
 
-t_btree		*bcn(void *item)
+t_btree		*btree_create_node(void *item)
 {
 	t_btree *node;
 
@@ -289,11 +289,11 @@ void	b_in(t_btree **root, void *item, int (*cmpf)(void *, void *))
 			else
 				node_it = &((*node_it)->left);
 		}
-		*node_it = bcn(item);
+		*node_it = btree_create_node(item);
 	}
 	else
 	{
-		*root = bcn(item);
+		*root = btree_create_node(item);
 	}
 }
 
@@ -336,7 +336,7 @@ void	bai(t_btree *root, void (*applyf)(void *))
 	}
 }
 
-t_btree		*bcn(void *item)
+t_btree		*btree_create_node(void *item)
 {
 	t_btree *node;
 
@@ -361,11 +361,11 @@ void	b_in(t_btree **root, void *item, int (*cmpf)(void *, void *))
 			else
 				node_it = &((*node_it)->left);
 		}
-		*node_it = bcn(item);
+		*node_it = btree_create_node(item);
 	}
 	else
 	{
-		*root = bcn(item);
+		*root = btree_create_node(item);
 	}
 }
 
@@ -386,4 +386,87 @@ int main()
 }
 ==== check -e ====
 $expected = "0\n3\n4\n";
+====
+
+ex07 -N -f1=btree_apply_by_level.c -f2=ft_btree.h
+
+lol hi
+main -f=btree_apply_by_level.c ====
+#include "ft_btree.h"
+#include <string.h>
+#include <stdio.h>
+
+void	btree_apply_by_level(t_btree *root, void (*applyf)(void *item,
+			int current_level, int is_first_elem));
+
+t_btree		*btree_create_node(void *item)
+{
+	t_btree *node;
+
+	node = malloc(sizeof(t_btree));
+	node->item = item;
+	node->left = 0;
+	node->right = 0;
+	return (node);
+}
+
+
+void	b_in(t_btree **root, void *item, int (*cmpf)(void *, void *))
+{
+	t_btree **node_it;
+
+	if(*root)
+	{
+		node_it = root;
+		while (*node_it) {
+			if (cmpf(item, (*node_it)->item) >= 0)
+				node_it = &((*node_it)->right);
+			else
+				node_it = &((*node_it)->left);
+		}
+		*node_it = btree_create_node(item);
+	}
+	else
+	{
+		*root = btree_create_node(item);
+	}
+}
+
+void ft_print(void *item, int current_level, int is_first_elem)
+{
+	if (is_first_elem)
+	{
+		printf("\nlevel: %d| ", current_level);
+	}
+	printf("%s", (char*)item);
+	printf("  ");
+}
+
+
+int main()
+{
+	t_btree* root = 0;
+	t_btree* root2 = 0;
+
+	b_in(&root, "6", (int(*)(void *, void *))strcmp);
+	b_in(&root, "7", (int(*)(void *, void *))strcmp);
+	b_in(&root, "4", (int(*)(void *, void *))strcmp);
+	b_in(&root, "3", (int(*)(void *, void *))strcmp);
+	b_in(&root, "5", (int(*)(void *, void *))strcmp);
+	b_in(&root, "2", (int(*)(void *, void *))strcmp);
+
+
+	b_in(&root2, "3", (int(*)(void *, void *))strcmp);
+	b_in(&root2, "4", (int(*)(void *, void *))strcmp);
+	b_in(&root2, "5", (int(*)(void *, void *))strcmp);
+	b_in(&root2, "6", (int(*)(void *, void *))strcmp);
+	b_in(&root2, "7", (int(*)(void *, void *))strcmp);
+	b_in(&root2, "2", (int(*)(void *, void *))strcmp);
+
+	btree_apply_by_level(root, &ft_print);
+	printf("\n");
+	btree_apply_by_level(root2, &ft_print);
+}
+==== check -e ====
+$expected = "\nlevel: 0| 6  \nlevel: 1| 4  7  \nlevel: 2| 3  5  \nlevel: 3| 2  \n\nlevel: 0| 3  \nlevel: 1| 2  4  \nlevel: 2| 5  \nlevel: 3| 6  \nlevel: 4| 7  ";
 ====
