@@ -240,7 +240,7 @@ sub spawn_check_file {
 		$suffix
 	");
 	append_file('tools/build.sh', "
-		cd work/$exercise; make; cd ../..;
+		cd work/$exercise; make 2>/dev/null; cd ../..;
 	");
 	append_file('tools/check_all.sh', "
 		perl work/$exercise/$name.pl
