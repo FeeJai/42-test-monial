@@ -217,7 +217,7 @@ void	bai(t_btree *root, void (*applyf)(void *))
 	}
 }
 
-t_btree		*bcn(void *item)
+t_btree		*btree_create_node(void *item)
 {
 	t_btree *node;
 
